@@ -78,7 +78,14 @@ def statistics_data(data):
 def split_data(data, test_size=0.3, random_state=1):
     x_train, x_test, y_train, y_test=None, None, None, None
     np.random.seed(1)
-    # Insert your code here for task 4
+    
+    # Assuming the last column of the data is the label
+    X = data[:, :-1]  # Features: all rows, all but the last column
+    y = data[:, -1]   # Labels: all rows, just the last column
+    
+    # Split the data into training and testing sets while maintaining label ratios
+    x_train, x_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state, stratify=y)
 
     return x_train, x_test, y_train, y_test
 
@@ -192,9 +199,6 @@ if __name__ == "__main__":
     print("-" * 50)
         
 # References: 
-# Here please provide recognition to any source if you have used or got code snippets from
-# Please tell the lines that are relavant to that reference.
-# For example: 
-# Line 80-87 is inspired by a code at https://stackoverflow.com/questions/48414212/how-to-calculate-accuracy-from-decision-trees
+
 
 
