@@ -20,7 +20,7 @@ def print_tree_structure(model, header_list):
 # Task 1 [10 marks]: Load the data from the CSV file and give back the number of rows
 def load_data(file_path, delimiter=','):
     # Init variables
-    num_rows, data, header_list=None, None, None
+    num_rows, data, header_list= None, None, None
 
     # Check if the file exists
     if not os.path.isfile(file_path):
@@ -128,25 +128,70 @@ def evaluate_model(model, x, y):
 # Task 8 [10 marks]: Write a function that gives the optimal value for cost complexity parameter
 # which leads to simpler model but almost same test accuracy as the unpruned model (+-1% of the unpruned accuracy)
 def optimal_ccp_alpha(x_train, y_train, x_test, y_test):
-    optimal_ccp_alpha=None
-
-    # Insert your code here for task 8
-
-    return optimal_ccp_alpha
+    # Train an unpruned decision tree to get the baseline accuracy
+    unpruned_model = DecisionTreeClassifier(random_state=1)
+    unpruned_model.fit(x_train, y_train)
+    baseline_accuracy = accuracy_score(y_test, unpruned_model.predict(x_test))
+    
+    # Initialize variables for the search
+    ccp_alpha_increment = 0.001  # Initial step size for ccp_alpha, adjust based on your dataset
+    current_ccp_alpha = 0
+    best_ccp_alpha = 0  # Renamed variable for clarity
+    accuracy_with_best_ccp_alpha = baseline_accuracy
+    
+    # Incrementally search for the optimal ccp_alpha
+    while True:
+        current_ccp_alpha += ccp_alpha_increment
+        model = DecisionTreeClassifier(ccp_alpha=current_ccp_alpha, random_state=1)
+        model.fit(x_train, y_train)
+        current_accuracy = accuracy_score(y_test, model.predict(x_test))
+        
+        # Check if the accuracy drop is within 1% of the baseline accuracy
+        if current_accuracy < baseline_accuracy - 0.01 * baseline_accuracy:
+            # If the accuracy drop is more than 1%, stop the loop
+            break
+        else:
+            # Update the best ccp_alpha if the current model's accuracy is within the acceptable range
+            best_ccp_alpha = current_ccp_alpha
+            accuracy_with_best_ccp_alpha = current_accuracy
+    
+    return best_ccp_alpha
 
 # Task 9 [10 marks]: Write a function that gives the depth of a decision tree that it takes as input.
 def tree_depths(model):
     depth=None
-    # Get the depth of the unpruned tree
-    # Insert your code here for task 9
+    
+    # Get the depth of the tree
+    depth = model.get_depth()
+    
     return depth
 
  # Task 10 [10 marks]: Feature importance 
 def important_feature(x_train, y_train,header_list):
     best_feature=None
-    # Train decision tree model and increase Cost Complexity Parameter until the depth reaches 1
-    # Insert your code here for task 10
+    
+    ccp_alpha_increment = 0.001  # Start with a small increment
+    ccp_alpha = 0  # Initial ccp_alpha value
+    
+    while True:
+        # Train a decision tree model with the current ccp_alpha
+        model = DecisionTreeClassifier(random_state=1, ccp_alpha=ccp_alpha)
+        model.fit(x_train, y_train)
+        
+        # Check the depth of the tree
+        if model.get_depth() == 1:
+            # When the depth is 1, find the most important feature
+            feature_importances = model.feature_importances_
+            # The index of the max importance corresponds to the feature
+            best_feature_index = feature_importances.argmax()
+            best_feature = header_list[best_feature_index]
+            break
+        else:
+            # If the depth is more than 1, increase ccp_alpha and continue
+            ccp_alpha += ccp_alpha_increment
+    
     return best_feature
+
 # Example usage (Template Main section):
 if __name__ == "__main__":
     # Load data
