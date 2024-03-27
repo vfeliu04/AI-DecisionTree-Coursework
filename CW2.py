@@ -92,19 +92,37 @@ def split_data(data, test_size=0.3, random_state=1):
 # Task 5 [10 marks]: Train a decision tree model with cost complexity parameter of 0
 def train_decision_tree(x_train, y_train,ccp_alpha=0):
     model=None
-    # Insert your code here for task 5
+    # Initialize the DecisionTreeClassifier model with the given ccp_alpha
+    model = DecisionTreeClassifier(ccp_alpha=ccp_alpha)
+    
+    # Fit the model to the training data
+    model.fit(x_train, y_train)
+    
     return model
 
 # Task 6 [10 marks]: Make predictions on the testing set 
 def make_predictions(model, X_test):
     y_test_predicted=None
-    # Insert your code here for task 6
+    
+    # Use the trained model to predict the labels of the test set
+    y_test_predicted = model.predict(X_test)
+    
     return y_test_predicted
 
 # Task 7 [10 marks]: Evaluate the model performance by taking test dataset and giving back the accuracy and recall 
 def evaluate_model(model, x, y):
     accuracy, recall=None,None
-    # Insert your code here for task 7
+    
+    # Use the model to make predictions on the given dataset
+    y_pred = model.predict(x)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(y, y_pred)
+    
+    # Calculate recall
+    # Note: Depending on your task, you might need to specify the `pos_label` in recall_score if your labels are not binary or if you're interested in a specific class.
+    recall = recall_score(y, y_pred, pos_label=1)  # Assuming your positive class is labeled as '1'
+    
     return accuracy, recall
 
 # Task 8 [10 marks]: Write a function that gives the optimal value for cost complexity parameter
