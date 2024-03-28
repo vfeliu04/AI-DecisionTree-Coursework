@@ -173,6 +173,7 @@ def optimal_ccp_alpha(x_train, y_train, x_test, y_test):
 
 # Task 9 [10 marks]: Write a function that gives the depth of a decision tree that it takes as input.
 def tree_depths(model):
+    # Init variable
     depth=None
     
     # Get the depth of the tree
@@ -182,6 +183,7 @@ def tree_depths(model):
 
  # Task 10 [10 marks]: Feature importance 
 def important_feature(x_train, y_train,header_list):
+    # Init variable
     best_feature=None
     
     ccp_alpha_increment = 0.001  # Start with a small increment
