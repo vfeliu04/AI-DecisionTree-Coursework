@@ -1,5 +1,6 @@
 # COMP2611-Artificial Intelligence-Coursework#2 - Descision Trees
 
+# Imports
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -11,14 +12,18 @@ import warnings
 import os
 
 # STUDENT NAME: Vicente Feliu
-# STUDENT EMAIL:  sc22vf@leeds.ac.uk
-    
+# STUDENT EMAIL: sc22vf@leeds.ac.uk
+
+# Print tree structure
 def print_tree_structure(model, header_list):
+    
     tree_rules = export_text(model, feature_names=header_list[:-1])
+    
     print(tree_rules)
     
 # Task 1 [10 marks]: Load the data from the CSV file and give back the number of rows
 def load_data(file_path, delimiter=','):
+    
     # Init variables
     num_rows, data, header_list= None, None, None
 
@@ -43,6 +48,7 @@ def load_data(file_path, delimiter=','):
 
 # Task 2[10 marks]: Give back the data by removing the rows with -99 values 
 def filter_data(data):
+    
     # Init variables
     filtered_data=[None]*1
     data = np.array(data)
@@ -57,6 +63,7 @@ def filter_data(data):
 
 # Task 3 [10 marks]: Data statistics, return the coefficient of variation for each feature, make sure to remove the rows with nan before doing this. 
 def statistics_data(data):
+    
     # Init variables and filter data
     coefficient_of_variation=None
     data=filter_data(data)
@@ -65,7 +72,7 @@ def statistics_data(data):
     mean = np.mean(data, axis=0)
     std_dev = np.std(data, axis=0)
     
-    # Calculate the coefficient of variation for each feature where a parameter to avoid division by zero is used,
+    # Calculate the coefficient of variation for each feature, where a parameter to avoid division by zero is used,
     # filling those cases with zeros instead.
     coefficient_of_variation = np.divide(std_dev, mean, out=np.zeros_like(std_dev), where=mean!=0)
 
@@ -76,7 +83,10 @@ def statistics_data(data):
 # meaning that the ratio between 0 and 1 in the lable column stays the same in train and test groups.
 # Also when using train_test_split function from scikit-learn make sure to use "random_state=1" as an argument. 
 def split_data(data, test_size=0.3, random_state=1):
+    # Init variables
     x_train, x_test, y_train, y_test=None, None, None, None
+    
+    # Set NumPy's random number generator to a fixed value of 1
     np.random.seed(1)
     
     # Assuming the last column of the data is the label
@@ -91,7 +101,9 @@ def split_data(data, test_size=0.3, random_state=1):
 
 # Task 5 [10 marks]: Train a decision tree model with cost complexity parameter of 0
 def train_decision_tree(x_train, y_train,ccp_alpha=0):
+    # Init variable
     model=None
+    
     # Initialize the DecisionTreeClassifier model with the given ccp_alpha
     model = DecisionTreeClassifier(ccp_alpha=ccp_alpha)
     
@@ -102,6 +114,7 @@ def train_decision_tree(x_train, y_train,ccp_alpha=0):
 
 # Task 6 [10 marks]: Make predictions on the testing set 
 def make_predictions(model, X_test):
+    # Init variable
     y_test_predicted=None
     
     # Use the trained model to predict the labels of the test set
@@ -111,6 +124,8 @@ def make_predictions(model, X_test):
 
 # Task 7 [10 marks]: Evaluate the model performance by taking test dataset and giving back the accuracy and recall 
 def evaluate_model(model, x, y):
+    
+    # Init variables
     accuracy, recall=None,None
     
     # Use the model to make predictions on the given dataset
@@ -120,8 +135,7 @@ def evaluate_model(model, x, y):
     accuracy = accuracy_score(y, y_pred)
     
     # Calculate recall
-    # Note: Depending on your task, you might need to specify the `pos_label` in recall_score if your labels are not binary or if you're interested in a specific class.
-    recall = recall_score(y, y_pred, pos_label=1)  # Assuming your positive class is labeled as '1'
+    recall = recall_score(y, y_pred, pos_label=1)
     
     return accuracy, recall
 
@@ -134,7 +148,7 @@ def optimal_ccp_alpha(x_train, y_train, x_test, y_test):
     baseline_accuracy = accuracy_score(y_test, unpruned_model.predict(x_test))
     
     # Initialize variables for the search
-    ccp_alpha_increment = 0.001  # Initial step size for ccp_alpha, adjust based on your dataset
+    ccp_alpha_increment = 0.001
     current_ccp_alpha = 0
     best_ccp_alpha = 0  # Renamed variable for clarity
     accuracy_with_best_ccp_alpha = baseline_accuracy
