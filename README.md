@@ -43,4 +43,4 @@ The project involves the following key tasks:
 
 ## Contributing
 
-University of Leeds: Brandon Bennet, Arash Rabbani (2024).
+This project is part of an academic coursework assignment. Therefore it is not fully mine.
