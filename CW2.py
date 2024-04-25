@@ -272,6 +272,13 @@ if __name__ == "__main__":
     print("-" * 50)
         
 # References: 
+"""Arora, S. 2020. Cost Complexity Pruning in Decision Trees | Decision Tree. Analytics Vidhya.
+    [Online]. [Accessed 16 April 2024]. Available from:
+    https://www.analyticsvidhya.com/blog/2020/10/cost-complexity-pruning-decision-trees/."""
+
+"""L, G.D. 2023. Five Methods for Data Splitting in Machine Learning. Medium.
+    [Online]. [Accessed 1 April 2024]. Available from:
+    https://medium.com/@tubelwj/five-methods-for-data-splitting-in-machine-learning-27baa50908ed#:~:text=Data%20splitting%20is%20a%20crucial."""
 
 
 
