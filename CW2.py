@@ -59,6 +59,7 @@ def filter_data(data):
     # Invert the condition to keep rows without -99 values
     filtered_data = data[~rows_with_missing_values]
 
+    # Return filtered data
     return filtered_data
 
 # Task 3 [10 marks]: Data statistics, return the coefficient of variation for each feature, make sure to remove the rows with nan before doing this. 
@@ -80,18 +81,18 @@ def statistics_data(data):
 
 # Task 4 [10 marks]: Split the dataset into training (70%) and testing sets (30%), 
 # use train_test_split of scikit-learn to make sure that the sampling is stratified, 
-# meaning that the ratio between 0 and 1 in the lable column stays the same in train and test groups.
+# meaning that the ratio between 0 and 1 in the label column stays the same in train and test groups.
 # Also when using train_test_split function from scikit-learn make sure to use "random_state=1" as an argument. 
 def split_data(data, test_size=0.3, random_state=1):
     # Init variables
     x_train, x_test, y_train, y_test=None, None, None, None
     
-    # Set NumPy's random number generator to a fixed value of 1
+    # Set numpy's random num generator to a fixed value of 1
     np.random.seed(1)
     
     # Assuming the last column of the data is the label
-    X = data[:, :-1]  # Features: all rows, all but the last column
-    y = data[:, -1]   # Labels: all rows, just the last column
+    X = data[:, :-1]
+    y = data[:, -1]
     
     # Split the data into training and testing sets while maintaining label ratios
     x_train, x_test, y_train, y_test = train_test_split(
@@ -131,10 +132,10 @@ def evaluate_model(model, x, y):
     # Use the model to make predictions on the given dataset
     y_pred = model.predict(x)
     
-    # Calculate accuracy
+    # Calc accuracy
     accuracy = accuracy_score(y, y_pred)
     
-    # Calculate recall
+    # Calc recall
     recall = recall_score(y, y_pred, pos_label=1)
     
     return accuracy, recall
@@ -147,28 +148,25 @@ def optimal_ccp_alpha(x_train, y_train, x_test, y_test):
     unpruned_model.fit(x_train, y_train)
     baseline_accuracy = accuracy_score(y_test, unpruned_model.predict(x_test))
     
-    # Initialize variables for the search
+    # Init variables for search
     ccp_alpha_increment = 0.001
     current_ccp_alpha = 0
-    best_ccp_alpha = 0  # Renamed variable for clarity
-    accuracy_with_best_ccp_alpha = baseline_accuracy
+    best_ccp_alpha = 0
     
-    # Incrementally search for the optimal ccp_alpha
+    # Search for the optimal ccp_alpha
     while True:
         current_ccp_alpha += ccp_alpha_increment
         model = DecisionTreeClassifier(ccp_alpha=current_ccp_alpha, random_state=1)
         model.fit(x_train, y_train)
         current_accuracy = accuracy_score(y_test, model.predict(x_test))
         
-        # Check if the accuracy drop is within 1% of the baseline accuracy
-        if current_accuracy < baseline_accuracy - 0.01 * baseline_accuracy:
-            # If the accuracy drop is more than 1%, stop the loop
+        # Check if the accuracy is outside the ±1% range of baseline accuracy
+        if abs(current_accuracy - baseline_accuracy) > 0.01 * baseline_accuracy:
             break
         else:
-            # Update the best ccp_alpha if the current model's accuracy is within the acceptable range
+            # Update the best ccp_alpha
             best_ccp_alpha = current_ccp_alpha
-            accuracy_with_best_ccp_alpha = current_accuracy
-    
+            
     return best_ccp_alpha
 
 # Task 9 [10 marks]: Write a function that gives the depth of a decision tree that it takes as input.
@@ -185,25 +183,21 @@ def tree_depths(model):
 def important_feature(x_train, y_train,header_list):
     # Init variable
     best_feature=None
-    
-    ccp_alpha_increment = 0.001  # Start with a small increment
-    ccp_alpha = 0  # Initial ccp_alpha value
+    ccp_alpha_increment = 0.001
+    ccp_alpha = 0
     
     while True:
         # Train a decision tree model with the current ccp_alpha
         model = DecisionTreeClassifier(random_state=1, ccp_alpha=ccp_alpha)
         model.fit(x_train, y_train)
         
-        # Check the depth of the tree
+        # Check the depth of the tree, and find the most important feature
         if model.get_depth() == 1:
-            # When the depth is 1, find the most important feature
             feature_importances = model.feature_importances_
-            # The index of the max importance corresponds to the feature
             best_feature_index = feature_importances.argmax()
             best_feature = header_list[best_feature_index]
             break
         else:
-            # If the depth is more than 1, increase ccp_alpha and continue
             ccp_alpha += ccp_alpha_increment
     
     return best_feature
